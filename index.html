@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Евгения Романенко — Плейлист от команды</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-bg: #F9F7F4;
+            --color-text: #3D3633;
+            --color-accent: #8B7355;
+            --color-light: #E8E2D9;
+            --color-dark: #2C2520;
+            --color-yandex-btn: #8B7355;
+        }
+
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--color-bg); color: var(--color-text); line-height: 1.6; }
+
+        nav { position: fixed; top: 0; width: 100%; background: rgba(249, 247, 244, 0.95); backdrop-filter: blur(10px); z-index: 1000; padding: 20px 60px; border-bottom: 1px solid var(--color-light); }
+        .nav-container { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5em; font-weight: 500; letter-spacing: 3px; color: var(--color-dark); }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { text-decoration: none; color: var(--color-text); font-size: 0.85em; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--color-accent); }
+
+        .hero { margin-top: 80px; min-height: 90vh; display: flex; align-items: center; justify-content: center; position: relative; background: linear-gradient(135deg, rgba(232,226,217,0.3) 0%, rgba(249,247,244,0.8) 100%); overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; right: -10%; width: 800px; height: 800px; background: radial-gradient(circle, rgba(139,115,85,0.1) 0%, transparent 70%); border-radius: 50%; }
+        .hero-content { max-width: 1200px; padding: 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; z-index: 1; }
+        .hero-text h1 { font-family: 'Cormorant Garamond', serif; font-size: 3.5em; font-weight: 300; line-height: 1.2; margin-bottom: 30px; color: var(--color-dark); }
+        .hero-text .subtitle { font-size: 0.9em; letter-spacing: 4px; text-transform: uppercase; color: var(--color-accent); margin-bottom: 40px; }
+        .hero-text .description { font-size: 1.1em; line-height: 1.8; color: var(--color-text); margin-bottom: 40px; }
+        
+        /* ИСПРАВЛЕНИЕ МАСШТАБИРОВАНИЯ ФОТО */
+        .hero-image { 
+            position: relative; 
+            width: 100%; 
+            max-width: 500px; 
+            aspect-ratio: 3/4; 
+            background: var(--color-light); 
+            overflow: hidden; 
+            border-radius: 12px; 
+            margin: 0 auto; 
+        }
+        .hero-image img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            object-position: center 20%; /* Фокус смещён вверх, чтобы лицо не обрезалось */
+        }
+
+        .hero-stats { display: flex; gap: 40px; margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--color-light); }
+        .stat { text-align: center; }
+        .stat-number { font-family: 'Cormorant Garamond', serif; font-size: 2.5em; font-weight: 500; color: var(--color-accent); display: block; }
+        .stat-label { font-size: 0.75em; letter-spacing: 2px; text-transform: uppercase; color: var(--color-text); margin-top: 5px; }
+
+        .playlist-section { padding: 100px 60px; max-width: 1400px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 80px; }
+        .section-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 3em; font-weight: 300; letter-spacing: 8px; text-transform: uppercase; color: var(--color-dark); margin-bottom: 20px; }
+        .section-header p { font-size: 1.1em; color: var(--color-accent); max-width: 600px; margin: 0 auto; }
+        .playlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+
+        .playlist-item { 
+            background: white; 
+            border: 1px solid var(--color-light); 
+            padding: 35px; 
+            transition: all 0.4s ease; 
+            cursor: pointer; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 280px;
+        }
+        .playlist-item::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--color-accent), transparent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
+        .playlist-item:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .playlist-item:hover::before { transform: scaleX(1); }
+
+        .item-number { font-family: 'Cormorant Garamond', serif; font-size: 0.9em; color: var(--color-accent); letter-spacing: 2px; margin-bottom: 15px; }
+        .item-song { font-family: 'Cormorant Garamond', serif; font-size: 1.6em; font-weight: 500; color: var(--color-dark); margin-bottom: 5px; line-height: 1.2; }
+        .item-artist { font-size: 0.9em; color: var(--color-accent); margin-bottom: 20px; font-style: italic; }
+        .item-from { font-size: 0.85em; color: var(--color-text); font-weight: 500; margin-bottom: 20px; }
+
+        .audio-player { display: flex; align-items: center; gap: 12px; margin-top: auto; padding: 12px; background: var(--color-bg); border-radius: 8px; }
+        .play-button { width: 40px; height: 40px; background: var(--color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; flex-shrink: 0; border: none; }
+        .play-button:hover { background: var(--color-dark); transform: scale(1.05); }
+        .play-button svg { width: 16px; height: 16px; fill: white; margin-left: 2px; }
+        .audio-info { flex: 1; min-width: 0; }
+        .audio-title { font-size: 0.8em; font-weight: 500; color: var(--color-dark); }
+        .audio-time { font-size: 0.7em; color: var(--color-accent); margin-top: 2px; }
+        .progress-bar { width: 100%; height: 3px; background: var(--color-light); border-radius: 2px; margin-top: 6px; overflow: hidden; cursor: pointer; }
+        .progress-fill { height: 100%; background: var(--color-accent); width: 0%; transition: width 0.1s linear; }
+
+        .streaming-links { margin-top: 15px; }
+        .streaming-link { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 10px 18px; 
+            background: var(--color-yandex-btn); 
+            border-radius: 25px; 
+            text-decoration: none; 
+            font-size: 0.8em; 
+            font-weight: 500; 
+            color: white; 
+            transition: all 0.3s; 
+        }
+        .streaming-link:hover { background: #6d5a41; transform: translateY(-2px); }
+        .streaming-link svg { width: 16px; height: 16px; fill: white; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 37, 32, 0.9); z-index: 2000; justify-content: center; align-items: center; padding: 40px; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--color-bg); max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; padding: 50px; border-radius: 4px; }
+        .modal-close { position: absolute; top: 20px; right: 25px; font-size: 2.5em; color: var(--color-text); cursor: pointer; background: none; border: none; transition: color 0.3s; }
+        .modal-close:hover { color: var(--color-accent); }
+        
+        .modal-song { font-family: 'Cormorant Garamond', serif; font-size: 2.2em; font-weight: 500; color: var(--color-dark); margin-bottom: 5px; }
+        .modal-artist { font-size: 1.1em; color: var(--color-accent); margin-bottom: 25px; font-style: italic; }
+        .modal-from { font-size: 0.9em; color: var(--color-text); margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid var(--color-light); font-weight: 500; }
+        .modal-description { font-size: 1.05em; line-height: 1.8; margin-bottom: 30px; white-space: pre-line; color: var(--color-text); }
+        
+        .modal-media { 
+            margin: 20px 0; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            background: var(--color-light);
+            width: 100%;
+            text-align: center;
+        }
+        .modal-media img { 
+            max-width: 100%; 
+            height: auto; 
+            max-height: 600px;
+            display: block;
+            margin: 0 auto;
+            image-rendering: auto;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        .modal-media video { 
+            width: 100%; 
+            height: auto;
+            max-height: 600px;
+            display: block; 
+            background: #000;
+        }
+
+        footer { background: var(--color-dark); color: var(--color-bg); padding: 60px; text-align: center; }
+        .footer-text { font-family: 'Cormorant Garamond', serif; font-size: 1.8em; font-weight: 300; margin-bottom: 20px; }
+        .footer-subtext { font-size: 0.9em; opacity: 0.7; letter-spacing: 2px; }
+
+        @media (max-width: 968px) {
+            .hero-content { grid-template-columns: 1fr; gap: 40px; }
+            .hero-image { 
+                max-width: 350px; 
+                aspect-ratio: 3/4; 
+                order: -1; 
+            }
+            .hero-text h1 { font-size: 2.5em; }
+            .playlist-grid { grid-template-columns: 1fr; }
+            nav { padding: 20px 30px; }
+            .nav-links { gap: 20px; }
+            .playlist-section { padding: 60px 30px; }
+            .modal-content { padding: 40px 25px; }
+            .modal-media img, .modal-media video { max-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">РОМАНЕНКО</div>
+            <div class="nav-links">
+                <a href="#playlist">Плейлист</a>
+                <a href="#about">От команды</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="subtitle">От команды с любовью</div>
+                <h1>Евгения Романенко</h1>
+                <p class="description">Вы не просто женщина в бизнесе, вы — человек, который вдохновляет нас каждый день.</p>
+                <p class="description">Мы собрали этот плейлист из песен, которые напоминают нам о вас, о наших совместных моментах и достижениях. Пусть эта музыка сопровождает вас весь год, напоминая о нашей поддержке и благодарности.</p>
+                <div class="hero-stats">
+                    <div class="stat"><span class="stat-number" id="totalSongs">0</span><div class="stat-label">Песен</div></div>
+                    <div class="stat"><span class="stat-number" id="totalContributors">0</span><div class="stat-label">Участников</div></div>
+                    <div class="stat"><span class="stat-number">∞</span><div class="stat-label">Воспоминаний</div></div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="media/evgenia.png" alt="Евгения Романенко">
+            </div>
+        </div>
+    </section>
+
+    <section class="playlist-section" id="playlist">
+        <div class="section-header">
+            <h2>Плейлист</h2>
+            <p>Нажмите на карточку, чтобы узнать историю, стоящую за этой песней</p>
+        </div>
+        <div class="playlist-grid" id="playlistGrid"></div>
+    </section>
+
+    <section class="playlist-section" id="about" style="background: white; margin: 0; max-width: 100%; padding: 100px 60px;">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 2.5em; font-weight: 300; margin-bottom: 30px; color: var(--color-dark);">От команды</h2>
+            <p style="font-size: 1.1em; line-height: 1.8; color: var(--color-text);">Этот плейлист — наш коллективный подарок вам. Каждый член команды добавил 1-2 песни, которые ассоциируются с вами или напоминают о совместном моменте. К некоторым песням мы приложили фотографии или видео тех самых моментов.</p>
+            <p style="font-size: 1.1em; line-height: 1.8; color: var(--color-text); margin-top: 20px;">Пусть эта музыка будет с вами весь год, напоминая о том, как сильно мы ценим ваше лидерство, мудрость и поддержку.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-text">С днём рождения, Евгения!</div>
+        <div class="footer-subtext">С любовью и благодарностью, ваша команда</div>
+    </footer>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const playlistData = [
+            {
+                song: "It's My Life",
+                artist: "Bon Jovi",
+                from: "От Юлии Танцеревой",
+                description: "Эта песня навевает воспоминания о нашей совместной юности и времени, проведенном вместе.",
+                audio: "media/BonJovi.Itsmylife.mp3",
+                yandex: "https://music.yandex.ru/album/5975424/track/48951",
+                media: "media/tancereva.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Overglow",
+                artist: "Adam Lambert",
+                from: "От Алексея Пугачева",
+                description: "Эта песня ассоциируется у меня с непрерывным и неуловимым моментом движения вперед.",
+                audio: "media/AdamLambert.Overglow.mp3",
+                yandex: "https://music.yandex.ru/album/9765981/track/58389498",
+                media: "media/Pugachev.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Run the World",
+                artist: "Beyoncé",
+                from: "От Ксении Понеделко",
+                description: "Для меня эта песня про силу, уверенность и какое-то особенное умение вести за собой так, что хочется не просто идти рядом, а включаться, разгоняться, замахиваться на большее. И, конечно, делать это с огоньком :)\n\nА ещё - про то, сколько вообще всего умеет и может женщина. Держать темп, принимать решения, справляться со сложными ситуациями, собирать вокруг себя людей. И при всём этом не терять самого важного: внимания и заботы о тех, кто рядом. Замечать, поддерживать, вовремя почувствовать, кому и что сейчас нужно.\n\nЕвгения, в вас всё это очень органично сочетается — сила, энергия, талант и забота о людях. И именно это сочетание так сильно вдохновляет каждого из нас.",
+                audio: "media/beyonce.mp3",
+                yandex: "https://music.yandex.ru/album/405860/track/3634020",
+                media: "media/Ponedelko.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Капитал",
+                artist: "Ляпис Трубецкой",
+                from: "От Веры Иванковой",
+                description: "Эта песня ассоциируется с вашей ролью в TR, как генерального директора.",
+                audio: "media/kapital.mp3",
+                yandex: "https://music.yandex.ru/album/25682264/track/113394156",
+                media: "media/LOK_4835.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Фраер",
+                artist: "Михаил Круг",
+                from: "От Веры Иванковой",
+                description: "Когда генеральный директор и главный бухгалтер могут \"пошалить\":)",
+                audio: "media/frayer.mp3",
+                yandex: "https://music.yandex.ru/album/11145/track/34568042",
+                media: "media/Ivankova.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Феникс",
+                artist: "BEARWOLF",
+                from: "От Ольги Гуревич",
+                description: "Про силу, которая может зажечь огни земли!",
+                audio: "media/bearwol.mp3",
+                yandex: "https://music.yandex.ru/album/40733359/track/148373155",
+                media: "media/5235928737625349993.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Видели ночь",
+                artist: "Zdob si Zdub, Трио Эрденко",
+                from: "От Ольги Гуревич",
+                description: "Эта песня ассоциируется с общими воспоминаниями, о том как мы умеем веселиться и получать удовольствие!",
+                audio: "media/Zdob.mp3",
+                yandex: "https://music.yandex.ru/album/18672967/track/92926547",
+                media: "media/4D2H9383.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Есаул",
+                artist: "Александр Розенбаум",
+                from: "От Ольги Гуревич",
+                description: "Потому что помнишь корни!",
+                audio: "media/rozem.mp3",
+                yandex: "https://music.yandex.ru/album/411732/track/33481320",
+                media: "media/5235928737625350018.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Владивосток 2000",
+                artist: "Мумий Тролль",
+                from: "От Армине Шаповаловой",
+                description: "Про надежды и тревоги, и ... караоке",
+                audio: "media/troll.mp3",
+                yandex: "https://music.yandex.ru/album/11805582/track/2192826",
+                media: "media/qwe.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Моя бабушка курит трубку",
+                artist: "Гарик Сукачев",
+                from: "От Армине Шаповаловой",
+                description: "Про свободу и праздник. Танцуем и достигаем успехов",
+                audio: "media/sukachev.mp3",
+                yandex: "https://music.yandex.ru/album/22160545/track/637991",
+                media: "media/17595601259150.mp4",
+                mediaType: "video"
+            },
+            {
+                song: "Я не колдунья",
+                artist: "Золотое кольцо & Надежда Кадышева",
+                from: "От Виктории Гапоненко",
+                description: "Всегда вспоминаю о стратегической сессии",
+                audio: "media/kadysheva.mp3",
+                yandex: "https://music.yandex.ru/album/4056659/track/33209486",
+                media: "media/5237725657452716616.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Большие города (Полковнику никто не пишет)",
+                artist: "Би-2",
+                from: "От HR отдела",
+                description: "Для нас это про атмосферу тех самых времён старого офиса: очень живую, тёплую и по-настоящему человеческую. Про моменты, в которых было всё — смех, искренность, поддержка, иногда сложности, через которые проходили вместе.",
+                audio: "media/b2.mp3",
+                yandex: "https://music.yandex.ru/album/60062/track/560473",
+                media: "media/5242335458736414838.jpg",
+                mediaType: "image"
+            },
+            {
+                song: "Третье Сентября",
+                artist: "Михаил Шуфутинский",
+                from: "От Светланы Казак",
+                description: "В комментариях не нуждается",
+                audio: "media/sufu.mp3",
+                yandex: "https://music.yandex.ru/album/7294257/track/52010356",
+                media: "media/photo1.jpg",
+                mediaType: "image"
+            }
+        ];
+
+        let currentAudio = null;
+        let currentPlayButton = null;
+
+        function renderPlaylist() {
+            const grid = document.getElementById('playlistGrid');
+            const contributors = new Set();
+
+            playlistData.forEach((item, index) => {
+                contributors.add(item.from);
+                
+                const card = document.createElement('div');
+                card.className = 'playlist-item';
+                card.onclick = () => openModal(item);
+
+                let audioHTML = '';
+                if (item.audio) {
+                    audioHTML = `
+                        <div class="audio-player" onclick="event.stopPropagation()">
+                            <button class="play-button" onclick="togglePlay(this, '${item.audio}', event)">
+                                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </button>
+                            <div class="audio-info">
+                                <div class="audio-title">Слушать трек</div>
+                                <div class="audio-time">0:00</div>
+                                <div class="progress-bar" onclick="seekAudio(event, this)">
+                                    <div class="progress-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let streamingHTML = '';
+                if (item.yandex) {
+                    streamingHTML = `
+                        <div class="streaming-links" onclick="event.stopPropagation()">
+                            <a href="${item.yandex}" target="_blank" class="streaming-link">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                                Слушать на Яндекс Музыке
+                            </a>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="item-number">ТРЕК ${String(index + 1).padStart(2, '0')}</div>
+                        <div class="item-song">${item.song}</div>
+                        <div class="item-artist">${item.artist}</div>
+                        <div class="item-from">${item.from}</div>
+                    </div>
+                    <div>
+                        ${audioHTML}
+                        ${streamingHTML}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            document.getElementById('totalSongs').textContent = playlistData.length;
+            document.getElementById('totalContributors').textContent = contributors.size;
+        }
+
+        function togglePlay(button, audioSrc, event) {
+            event.stopPropagation();
+            const icon = button.querySelector('svg');
+            const playIcon = '<path d="M8 5v14l11-7z"/>';
+            const pauseIcon = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+            
+            if (currentAudio && currentAudio.src.includes(audioSrc)) {
+                if (currentAudio.paused) {
+                    currentAudio.play();
+                    icon.innerHTML = pauseIcon;
+                } else {
+                    currentAudio.pause();
+                    icon.innerHTML = playIcon;
+                }
+                return;
+            }
+            
+            if (currentAudio) {
+                currentAudio.pause();
+                if (currentPlayButton) currentPlayButton.querySelector('svg').innerHTML = playIcon;
+            }
+            
+            currentAudio = new Audio(audioSrc);
+            currentPlayButton = button;
+            
+            currentAudio.play().catch(err => {
+                console.error("Ошибка воспроизведения:", err);
+                alert("Не удалось воспроизвести файл. Проверьте, лежит ли он в папке media: " + audioSrc);
+            });
+            
+            icon.innerHTML = pauseIcon;
+            
+            const progressBar = button.closest('.audio-player').querySelector('.progress-fill');
+            const timeDisplay = button.closest('.audio-player').querySelector('.audio-time');
+            
+            currentAudio.addEventListener('timeupdate', () => {
+                if (!currentAudio.duration) return;
+                const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+                progressBar.style.width = progress + '%';
+                const minutes = Math.floor(currentAudio.currentTime / 60);
+                const seconds = Math.floor(currentAudio.currentTime % 60);
+                timeDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            });
+            
+            currentAudio.addEventListener('ended', () => {
+                icon.innerHTML = playIcon;
+                progressBar.style.width = '0%';
+                timeDisplay.textContent = '0:00';
+            });
+        }
+
+        function seekAudio(event, progressBar) {
+            if (!currentAudio || !currentAudio.duration) return;
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const percent = Math.max(0, Math.min(1, clickX / rect.width));
+            currentAudio.currentTime = percent * currentAudio.duration;
+        }
+
+        function openModal(item) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modalBody');
+
+            let mediaHTML = '';
+            if (item.media) {
+                if (item.mediaType === 'video') {
+                    mediaHTML = `<div class="modal-media"><video controls><source src="${item.media}" type="video/mp4"></video></div>`;
+                } else {
+                    mediaHTML = `<div class="modal-media"><img src="${item.media}" alt="Воспоминание"></div>`;
+                }
+            }
+
+            let audioHTML = '';
+            if (item.audio) {
+                audioHTML = `
+                    <div class="audio-player" style="margin: 25px 0;">
+                        <button class="play-button" onclick="togglePlay(this, '${item.audio}', event)">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <div class="audio-info">
+                            <div class="audio-title">Слушать трек</div>
+                            <div class="audio-time">0:00</div>
+                            <div class="progress-bar" onclick="seekAudio(event, this)">
+                                <div class="progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let streamingHTML = '';
+            if (item.yandex) {
+                streamingHTML = `
+                    <div class="streaming-links" style="margin-top: 25px;">
+                        <a href="${item.yandex}" target="_blank" class="streaming-link">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                            Слушать на Яндекс Музыке
+                        </a>
+                    </div>
+                `;
+            }
+
+            modalBody.innerHTML = `
+                <div class="modal-song">${item.song}</div>
+                <div class="modal-artist">${item.artist}</div>
+                <div class="modal-from">${item.from}</div>
+                ${mediaHTML}
+                ${audioHTML}
+                <div class="modal-description">${item.description}</div>
+                ${streamingHTML}
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                currentPlayButton = null;
+            }
+        }
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPlaylist();
+        });
+    </script>
+</body>
+</html>
